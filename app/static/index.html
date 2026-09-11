@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive evidence page for regularized cross-modal interaction in video-language models.">
+  <title>Stable Cross-Modal Interaction</title>
+  <style>
+    :root {
+      --ink: #16202a;
+      --muted: #566372;
+      --paper: #f7fafc;
+      --panel: #ffffff;
+      --cobalt: #0b3b8c;
+      --cyan: #31c8d0;
+      --mint: #9de4c2;
+      --coral: #ef6a5b;
+      --line: #d8e2ea;
+      --shadow: 0 18px 60px rgba(11, 59, 140, 0.11);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(11,59,140,.035) 1px, transparent 1px) 0 0 / 28px 28px,
+        linear-gradient(rgba(11,59,140,.035) 1px, transparent 1px) 0 0 / 28px 28px,
+        var(--paper);
+      font-family: Aptos, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+    button, input { font: inherit; }
+    :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+
+    .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 0;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+    .status { display: flex; align-items: center; gap: 9px; }
+    .status::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px rgba(49,200,208,.16);
+    }
+    .topbar a { text-decoration: none; border-bottom: 1px solid var(--ink); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 52px;
+      padding: 74px 0 86px;
+      align-items: end;
+    }
+    .eyebrow, .label {
+      font-family: "Cascadia Code", Consolas, monospace;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cobalt);
+    }
+    h1, h2, h3 { font-family: Bahnschrift, "Arial Narrow", sans-serif; margin: 0; line-height: 1.04; }
+    h1 { font-size: clamp(52px, 8vw, 104px); letter-spacing: -.055em; max-width: 850px; }
+    h1 .shift { color: var(--cobalt); display: block; transform: translateX(7%); }
+    .hero p { margin: 28px 0 0; max-width: 680px; color: var(--muted); font-size: 18px; }
+    .equation {
+      background: var(--ink);
+      color: white;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      transform: rotate(1.4deg);
+      border-left: 8px solid var(--cyan);
+    }
+    .equation code { font: 15px/1.9 "Cascadia Code", Consolas, monospace; }
+    .equation small { display: block; margin-top: 20px; color: #b8c6d2; }
+
+    section { padding: 78px 0; border-top: 1px solid var(--line); }
+    .section-head { display: flex; justify-content: space-between; gap: 28px; align-items: end; margin-bottom: 34px; }
+    .section-head h2 { font-size: clamp(36px, 5vw, 64px); letter-spacing: -.04em; }
+    .section-head p { max-width: 440px; color: var(--muted); margin: 0; }
+
+    .lab-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 22px; }
+    .control-panel, .trace-panel, .result-card, .architecture {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .control-panel { padding: 30px; }
+    .control { margin-top: 28px; }
+    .control-row { display: flex; justify-content: space-between; gap: 15px; align-items: baseline; }
+    .control strong { font-family: "Cascadia Code", Consolas, monospace; font-size: 18px; }
+    input[type="range"] { width: 100%; accent-color: var(--cobalt); margin: 15px 0 5px; }
+    .microcopy { font-size: 13px; color: var(--muted); }
+
+    .trace-panel { padding: 30px; position: relative; overflow: hidden; }
+    .trace-panel::after {
+      content: "EQUATION 04";
+      position: absolute;
+      right: -33px;
+      top: 65px;
+      transform: rotate(90deg);
+      font: 11px "Cascadia Code", monospace;
+      letter-spacing: .15em;
+      color: var(--cobalt);
+    }
+    .rail { position: relative; height: 118px; margin: 52px 22px 20px; }
+    .rail-line { position: absolute; left: 0; right: 0; top: 50%; height: 3px; background: var(--line); }
+    .rail-progress { position: absolute; left: 0; top: 50%; height: 3px; background: var(--cyan); width: 10%; transition: width .2s ease; }
+    .rail-node { position: absolute; top: calc(50% - 10px); width: 21px; height: 21px; border-radius: 50%; background: var(--panel); border: 4px solid var(--cobalt); }
+    .rail-node.start { left: -1px; }
+    .rail-node.end { right: -1px; border-color: var(--coral); }
+    .rail-gate { position: absolute; top: calc(50% - 14px); left: 10%; width: 29px; height: 29px; border-radius: 3px; background: var(--cyan); transform: translateX(-50%) rotate(45deg); transition: left .2s ease; }
+    .rail-caption { display: flex; justify-content: space-between; font: 12px "Cascadia Code", monospace; }
+    .bound-readout { display: flex; gap: 18px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 22px; }
+    .bound-readout output { font: 700 clamp(38px, 5vw, 64px) Bahnschrift, sans-serif; color: var(--cobalt); }
+
+    .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    .result-card { padding: 30px; }
+    .result-card h3 { font-size: 28px; margin-top: 9px; }
+    .bar-row { display: grid; grid-template-columns: 110px 1fr 58px; gap: 12px; align-items: center; margin-top: 24px; font-size: 14px; }
+    .bar-track { height: 12px; background: #eaf0f4; overflow: hidden; }
+    .bar { display: block; height: 100%; background: var(--cobalt); }
+    .bar.proposed { background: linear-gradient(90deg, var(--cobalt), var(--cyan)); }
+    .delta { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; }
+    .delta strong { color: var(--cobalt); font: 700 24px Bahnschrift, sans-serif; }
+    .provenance { margin-top: 22px; color: var(--muted); font-size: 13px; }
+
+    .architecture { padding: 36px; }
+    .lane { display: grid; grid-template-columns: 80px 1fr 170px 1fr 80px; gap: 12px; align-items: center; margin: 18px 0; }
+    .token, .block, .gate-block { padding: 15px 12px; text-align: center; font: 12px "Cascadia Code", monospace; border: 1px solid var(--line); }
+    .token { border-radius: 50%; aspect-ratio: 1; display: grid; place-items: center; border-color: var(--cobalt); }
+    .block { position: relative; }
+    .block::after { content: "→"; position: absolute; right: -19px; color: var(--muted); }
+    .gate-block { background: rgba(157,228,194,.38); border-color: #58b78c; }
+    .cross-note { text-align: center; color: var(--cobalt); font: 11px "Cascadia Code", monospace; letter-spacing: .05em; }
+
+    .footer { padding: 44px 0 70px; color: var(--muted); display: flex; justify-content: space-between; gap: 22px; }
+    .footer a { color: var(--cobalt); }
+
+    @media (max-width: 820px) {
+      .hero, .lab-grid, .results-grid { grid-template-columns: 1fr; }
+      .hero { padding-top: 38px; }
+      h1 .shift { transform: none; }
+      .equation { transform: none; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 16px; }
+      .lane { grid-template-columns: 58px 1fr 120px; }
+      .lane .block:nth-of-type(3), .lane .token:last-child { display: none; }
+      .footer { display: block; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .rail-progress, .rail-gate { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="shell topbar">
+    <div class="status">Executable reference / API online</div>
+    <a href="https://doi.org/10.3390/math14060996">DOI 10.3390/math14060996</a>
+  </header>
+
+  <main>
+    <div class="shell hero">
+      <div>
+        <div class="eyebrow">Video-language stability · 2026</div>
+        <h1>Cross-modal,<span class="shift">under control.</span></h1>
+        <p>A PyTorch reference implementation of learnable convex gating for stable temporal reasoning. The page keeps published evidence and locally computed diagnostics visibly separate.</p>
+      </div>
+      <aside class="equation" aria-label="Equation four">
+        <code>h̃ᵥ = (1 − γ)hᵥ<br>     + γA(hᵥ, hᑫ)</code>
+        <small>γ starts at 0.1 and stays inside [0, 1].</small>
+      </aside>
+    </div>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div><div class="label">Computed live</div><h2>Move the gate.</h2></div>
+          <p>The maximum feature displacement scales linearly with γ. This interactive rail is a direct calculator for Lemma 1, not a trained VideoQA score.</p>
+        </div>
+        <div class="lab-grid">
+          <div class="control-panel">
+            <div class="label">Inputs</div>
+            <div class="control">
+              <div class="control-row"><label for="gamma">Gate strength γ</label><strong id="gammaValue">0.10</strong></div>
+              <input id="gamma" type="range" min="0" max="1" value="0.1" step="0.01">
+              <div class="microcopy">Paper initialization: 0.10</div>
+            </div>
+            <div class="control">
+              <div class="control-row"><label for="distance">Candidate distance</label><strong id="distanceValue">3.20</strong></div>
+              <input id="distance" type="range" min="0" max="10" value="3.2" step="0.1">
+              <div class="microcopy">‖A(hᵥ, hᑫ) − hᵥ‖</div>
+            </div>
+          </div>
+          <div class="trace-panel">
+            <div class="label">Bounded feature path</div>
+            <div class="rail" aria-hidden="true">
+              <div class="rail-line"></div><div class="rail-progress" id="railProgress"></div>
+              <div class="rail-node start"></div><div class="rail-gate" id="railGate"></div><div class="rail-node end"></div>
+            </div>
+            <div class="rail-caption"><span>unimodal hᵥ</span><span>candidate A(hᵥ, hᑫ)</span></div>
+            <div class="bound-readout"><output id="boundValue">0.320</output><span>maximum update norm</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div><div class="label">Reported in the paper</div><h2>Accuracy with context.</h2></div>
+          <p>High retention only matters when the model still reasons. The DE-0 baseline's zero drop on MSR-VTT is labeled trivial stability because its predictions collapse toward majority classes.</p>
+        </div>
+        <div class="results-grid">
+          <article class="result-card">
+            <div class="label">EgoTaskQA · clean accuracy</div><h3>First-person temporal reasoning</h3>
+            <div class="bar-row"><span>DE-0</span><div class="bar-track"><i class="bar" style="width:54%"></i></div><strong>27.0%</strong></div>
+            <div class="bar-row"><span>FIB-6 gated</span><div class="bar-track"><i class="bar proposed" style="width:63.4%"></i></div><strong>31.7%</strong></div>
+            <div class="delta"><span>Accuracy gain</span><strong>+4.7 pp</strong></div>
+          </article>
+          <article class="result-card">
+            <div class="label">MSR-VTT binary · clean accuracy</div><h3>Cross-dataset generalization</h3>
+            <div class="bar-row"><span>DE-0</span><div class="bar-track"><i class="bar" style="width:51%"></i></div><strong>51.0%</strong></div>
+            <div class="bar-row"><span>FIB-6 gated</span><div class="bar-track"><i class="bar proposed" style="width:64%"></i></div><strong>64.0%</strong></div>
+            <div class="delta"><span>Macro-F1 gain</span><strong>+0.205</strong></div>
+          </article>
+        </div>
+        <p class="provenance">Source: Tables 2 and 6, Mathematics 2026, 14, 996. These are paper-reported values and are not presented as an independent rerun.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div><div class="label">Implementation map</div><h2>Two streams, one constraint.</h2></div>
+          <p>Both directions read the same pre-update state, so the result does not depend on whether video or text happens to be updated first in code.</p>
+        </div>
+        <div class="architecture" role="img" aria-label="Bidirectional video and query fusion architecture">
+          <div class="lane"><div class="token">Video</div><div class="block">Backbone l</div><div class="gate-block">Gated CM update</div><div class="block">Layer l+1</div><div class="token">h̃ᵥ</div></div>
+          <div class="cross-note">↕ bidirectional cross-modal attention ↕</div>
+          <div class="lane"><div class="token">Query</div><div class="block">Backbone l</div><div class="gate-block">Gated CM update</div><div class="block">Layer l+1</div><div class="token">h̃ᑫ</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <span>Geon-Woo Kim · Ho-Young Jung · Mathematics 14(6), 996</span>
+    <span><a href="/docs">OpenAPI</a> · <a href="/api/paper-results">Result data</a> · <a href="/api/health">Health</a></span>
+  </footer>
+
+  <script>
+    const gamma = document.querySelector('#gamma');
+    const distance = document.querySelector('#distance');
+    const gammaValue = document.querySelector('#gammaValue');
+    const distanceValue = document.querySelector('#distanceValue');
+    const boundValue = document.querySelector('#boundValue');
+    const railProgress = document.querySelector('#railProgress');
+    const railGate = document.querySelector('#railGate');
+
+    async function updateBound() {
+      const g = Number(gamma.value);
+      const d = Number(distance.value);
+      gammaValue.textContent = g.toFixed(2);
+      distanceValue.textContent = d.toFixed(2);
+      railProgress.style.width = `${g * 100}%`;
+      railGate.style.left = `${g * 100}%`;
+      try {
+        const response = await fetch('/api/update-bound', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({gamma: g, candidate_distance: d})
+        });
+        const data = await response.json();
+        boundValue.textContent = Number(data.maximum_update_norm).toFixed(3);
+      } catch (_) {
+        boundValue.textContent = (g * d).toFixed(3);
+      }
+    }
+
+    gamma.addEventListener('input', updateBound);
+    distance.addEventListener('input', updateBound);
+    updateBound();
+  </script>
+</body>
+</html>
+

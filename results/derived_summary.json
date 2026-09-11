@@ -1,0 +1,18 @@
+{
+  "provenance": "arithmetic derived from paper-reported Tables 2, 5, and 6",
+  "ego_task_qa": {
+    "clean_accuracy_gain_pp": 4.7,
+    "frame_drop_reduction_pp": 2.99,
+    "frame_drop_reduction_percent": 76.1
+  },
+  "msr_vtt": {
+    "clean_accuracy_gain_pp": 13.0,
+    "macro_f1_gain": 0.205,
+    "gated_retention_percent": 97.7
+  },
+  "efficiency": {
+    "parameter_increase_percent": 5.9,
+    "gflops_increase_percent": 11.6,
+    "latency_increase_percent": 20.0
+  }
+}

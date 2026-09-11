@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stable-cross-modal-interaction"
+version = "0.1.0"
+description = "Executable reference implementation of regularized backbone-level cross-modal interaction."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Geon-Woo Kim"}]
+dependencies = [
+  "fastapi>=0.110,<1.0",
+  "numpy>=1.24,<3.0",
+  "pydantic>=2.6,<3.0",
+  "torch>=2.2,<3.0",
+  "uvicorn[standard]>=0.27,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.27,<1.0",
+  "pytest>=8.0,<9.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+

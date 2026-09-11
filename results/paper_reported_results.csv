@@ -1,0 +1,10 @@
+dataset,split,method,clean_accuracy,perturbed_accuracy,drop_pp,macro_f1,attention_entropy,params_m,gflops,latency_ms,throughput,status,source_table
+MSR-VTT,Binary,DE-0,51.0,51.0,0.0,0.334,,125.4,282.1,650,13.0,trivial stability,Tables 2 and 5
+MSR-VTT,Binary,FIB-6 Gated,64.0,62.5,1.5,0.539,2.337,132.8,314.8,780,10.5,robust reasoning,Tables 2 and 5
+EgoTaskQA,Overall,DE-0,27.0,,3.93,,,,,,,baseline,Table 6
+EgoTaskQA,Overall,FIB-6 Gated,31.7,,0.94,,,,,,,proposed,Table 6
+EgoTaskQA,Direct,Baseline EgoVLPv2,31.68,,,,,,,,,,matched baseline,Table 4
+EgoTaskQA,Direct,CM Ours,33.35,,,,,,,,,,proposed,Table 4
+EgoTaskQA,Indirect,Baseline EgoVLPv2,31.22,,,,,,,,,,matched baseline,Table 4
+EgoTaskQA,Indirect,CM Ours,33.25,,,,,,,,,,proposed,Table 4
+

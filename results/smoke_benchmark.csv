@@ -1,0 +1,6 @@
+gate,seeds,mean_update_norm,mean_bound,max_bound_violation,passed,scope
+0.05,5,0.06840572,0.06840573,0.0000001416,True,local mechanism smoke test
+0.10,5,0.13681145,0.13681146,0.0000001490,True,local mechanism smoke test
+0.25,5,0.34202862,0.34202862,0.0000001192,True,local mechanism smoke test
+0.50,5,0.68405725,0.68405725,0.0000001192,True,local mechanism smoke test
+1.00,5,1.36811330,1.36811323,0.0000002384,True,local mechanism smoke test
