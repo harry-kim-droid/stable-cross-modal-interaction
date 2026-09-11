@@ -5,10 +5,8 @@ __pycache__/
 .venv/
 venv/
 .env
-dist/
 build/
 *.egg-info/
 checkpoints/
 data/
 results/*.tmp
-
