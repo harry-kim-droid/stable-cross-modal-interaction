@@ -6,5 +6,9 @@
 
 `smoke_benchmark.csv` is generated locally by `scripts/run_smoke_benchmark.py`. It verifies the Bounded Update Property on random feature tensors and is not a VideoQA benchmark.
 
-Keeping these files separate prevents a mechanism-level smoke test from being misrepresented as a reproduction of EgoTaskQA or MSR-VTT.
+`runtime_benchmark.csv` is generated locally by `scripts/benchmark_runtime.py`.
+It measures isolated fusion-module latency and throughput on the machine recorded
+in the row. It is not end-to-end service latency and should be regenerated on the
+target hardware before making deployment capacity claims.
 
+Keeping these files separate prevents a mechanism-level smoke test from being misrepresented as a reproduction of EgoTaskQA or MSR-VTT.

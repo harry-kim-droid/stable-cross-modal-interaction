@@ -2,7 +2,7 @@
 
 An executable reference implementation for **“A Regularized Backbone-Level Cross-Modal Interaction Framework for Stable Temporal Reasoning in Video-Language Models”** (Mathematics 2026, 14, 996).
 
-[Paper](https://doi.org/10.3390/math14060996) · [Interactive demo](#run-the-web-demo) · [Reproduction guide](docs/REPRODUCTION.md)
+[Paper](https://doi.org/10.3390/math14060996) · [Live demo](https://stable-cross-modal-interaction.rjsdn215.chatgpt.site) · [Technical specification](docs/TECHNICAL_SPEC_TRANSLATION.md) · [Reproduction guide](docs/REPRODUCTION.md)
 
 This repository turns the paper's central idea into code: a learnable gate constrains bidirectional video-language interaction inside the transformer backbone. The core implementation follows Equation (4):
 
@@ -22,6 +22,25 @@ $$
 - Paper-reported results in machine-readable CSV form plus a derived comparison script.
 - A FastAPI service and responsive research-demo interface.
 - Tests, Docker support, and GitHub Actions CI.
+
+## Engineering evidence
+
+The repository treats correctness, runtime, and research results as separate
+measurements. That distinction keeps the portfolio claims auditable.
+
+| Evidence | Measured result | Scope |
+|---|---:|---|
+| Automated model/API tests | **7/7 passed** | Local test suite |
+| Bounded-update smoke test | **25/25 configurations passed** | 5 gates × 5 random seeds |
+| Timed invariant checks | **200/200 passed** | Both fusion directions over 100 timed runs |
+| CPU inference latency | **4.19 ms mean / 11.83 ms p95** | Batch 8, 28 tokens per sample, hidden size 128 |
+| CPU throughput | **1,911 samples/s · 53,516 tokens/s** | Isolated bidirectional fusion operator |
+
+Runtime measurements were recorded on the environment stored in
+[`results/runtime_benchmark.csv`](results/runtime_benchmark.csv); they are not
+end-to-end VideoQA latency or model-quality results. The translation from the
+initial open-ended request to testable acceptance criteria is documented in
+[`docs/TECHNICAL_SPEC_TRANSLATION.md`](docs/TECHNICAL_SPEC_TRANSLATION.md).
 
 ## Architecture
 
@@ -83,9 +102,12 @@ source .venv/bin/activate
 python -m pip install -e ".[dev]"
 pytest -q
 python scripts/run_smoke_benchmark.py
+python scripts/benchmark_runtime.py
 ```
 
-The smoke benchmark verifies the bounded update across five random seeds and writes `results/smoke_benchmark.csv`.
+The smoke benchmark verifies the bounded update across five random seeds and
+writes `results/smoke_benchmark.csv`. The runtime benchmark measures mean, p50,
+p95, throughput, and bound failures and writes `results/runtime_benchmark.csv`.
 
 ## Minimal model example
 
@@ -159,4 +181,3 @@ The published experiments require EgoTaskQA/MSR-VTT data, EgoVLPv2 weights, and 
   doi={10.3390/math14060996}
 }
 ```
-

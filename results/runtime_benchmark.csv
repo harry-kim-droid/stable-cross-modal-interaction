@@ -1,0 +1,2 @@
+scope,device,platform,python,torch,torch_threads,batch_size,video_tokens,text_tokens,hidden_dim,num_heads,parameter_count,warmup_iterations,measured_iterations,mean_latency_ms,p50_latency_ms,p95_latency_ms,samples_per_second,tokens_per_second,bound_checks,bound_failures,bound_failure_rate,max_bound_violation
+local mechanism inference,cpu,Windows-10-10.0.26200-SP0,3.11.9,2.12.1+cpu,6,8,16,12,128,8,265474,20,100,4.1857,2.9076,11.8313,1911.28,53515.80,200,0,0.000000,0.0000001043
